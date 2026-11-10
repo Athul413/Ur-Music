@@ -22,7 +22,7 @@ jobs:
       - name: Patch Android files
         working-directory: offline_music
         run: python3 tool/patch_android.py
-            - name: Validate Manifest
+      - name: Validate Manifest
         working-directory: offline_music
         run: |
           echo "===== ANDROID MANIFEST ====="
