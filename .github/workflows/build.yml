@@ -1,0 +1,31 @@
+name: Build APK
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip project
+        run: unzip -o offline_music.zip
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: subosito/flutter-action@v2
+        with: { channel: stable }
+      - name: Generate Android project
+        working-directory: offline_music
+        run: flutter create . --org com.example --project-name offline_music --platforms=android && rm -rf test
+      - name: Patch Android files
+        working-directory: offline_music
+        run: python3 tool/patch_android.py
+      - name: Get packages
+        working-directory: offline_music
+        run: flutter pub get
+      - name: Build APK
+        working-directory: offline_music
+        run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: offline-music-apk
+          path: offline_music/build/app/outputs/flutter-apk/app-release.apk
