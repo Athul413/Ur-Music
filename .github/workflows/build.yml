@@ -32,3 +32,8 @@ jobs:
         with:
           name: offline-music-apk
           path: offline_music/build/app/outputs/flutter-apk/app-release.apk
+      - name: Validate Android Manifest
+        working-directory: offline_music
+        run: |
+          cat android/app/src/main/AndroidManifest.xml
+          python3 -c "import xml.etree.ElementTree as ET; ET.parse('android/app/src/main/AndroidManifest.xml'); print('MANIFEST XML VALID')"
