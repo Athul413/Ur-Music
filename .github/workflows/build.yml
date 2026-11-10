@@ -22,6 +22,19 @@ jobs:
       - name: Patch Android files
         working-directory: offline_music
         run: python3 tool/patch_android.py
+      - name: Validate Manifest
+        working-directory: offline_music
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          try:
+              ET.parse("android/app/src/main/AndroidManifest.xml")
+              print("MANIFEST VALID")
+          except ET.ParseError as e:
+              print("MANIFEST ERROR:", e)
+              raise
+          PY
+          cat android/app/src/main/AndroidManifest.xml
       - name: Get packages
         working-directory: offline_music
         run: flutter pub get
